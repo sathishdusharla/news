@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 
 // Set up PDF.js worker with fallback
 if (typeof window !== 'undefined') {
@@ -65,20 +65,6 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date, setViewMode }
     setCurrentPage(prev => Math.min(numPages, prev + 1));
   }, [numPages]);
 
-  const zoomIn = useCallback(() => {
-    setScale(prev => {
-      const baseScale = getResponsiveScale();
-      return Math.min(baseScale * 3.0, prev + 0.2);
-    });
-  }, []);
-
-  const zoomOut = useCallback(() => {
-    setScale(prev => {
-      const baseScale = getResponsiveScale();
-      return Math.max(baseScale * 0.3, prev - 0.2);
-    });
-  }, []);
-
   const handleDownload = useCallback(() => {
     if (pdfUrl) {
       const link = document.createElement('a');
@@ -107,9 +93,10 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date, setViewMode }
   if (!pdfUrl) {
     return (
       <div className="bg-white min-h-screen">
-        <div className="bg-white border-b px-4 py-3">
+        <div className="bg-white border-b px-4 py-4">
           <div className="container mx-auto text-center">
-            <span className="text-gray-600 text-sm">{date}</span>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Today's Edition</h1>
+            <p className="text-gray-600 text-sm md:text-base">{date}</p>
           </div>
         </div>
         <div className="flex flex-col items-center justify-center min-h-[400px] bg-white p-8">
@@ -126,84 +113,11 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date, setViewMode }
 
   return (
     <div className="bg-white">
-      {/* Header */}
-      <div className="bg-white border-b px-4 py-3">
-        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <span className="text-gray-600 text-sm">{date}</span>
-            {numPages > 0 && (
-              <>
-                <span className="text-gray-400">•</span>
-                <span className="text-gray-600 text-sm">Page {currentPage} of {numPages}</span>
-              </>
-            )}
-          </div>
-          
-          {/* Controls */}
-          <div className="flex items-center gap-2">
-            {/* Navigation */}
-            <div className="flex items-center space-x-1">
-              <button
-                onClick={goToPrevPage}
-                disabled={currentPage <= 1}
-                className="flex items-center space-x-1 px-3 py-1 text-sm bg-gray-100 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Prev</span>
-              </button>
-
-              <select
-                value={currentPage}
-                onChange={(e) => setCurrentPage(Number(e.target.value))}
-                className="border rounded px-2 py-1 bg-white text-sm"
-              >
-                {Array.from({ length: numPages }, (_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    {i + 1}
-                  </option>
-                ))}
-              </select>
-
-              <button
-                onClick={goToNextPage}
-                disabled={currentPage >= numPages}
-                className="flex items-center space-x-1 px-3 py-1 text-sm bg-gray-100 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 transition-colors"
-              >
-                <span>Next</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-            
-            {/* Zoom and Download */}
-            <div className="flex items-center space-x-1">
-              <button
-                onClick={zoomOut}
-                className="p-1 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
-                title="Zoom Out"
-              >
-                <ZoomOut className="w-4 h-4" />
-              </button>
-              <span className="text-xs px-1 min-w-[45px] text-center">{Math.round(scale * 100)}%</span>
-              <button
-                onClick={zoomIn}
-                className="p-1 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
-                title="Zoom In"
-              >
-                <ZoomIn className="w-4 h-4" />
-              </button>
-              
-              <div className="w-px h-4 bg-gray-300 mx-1"></div>
-              
-              <button
-                onClick={handleDownload}
-                className="flex items-center space-x-1 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                title="Download PDF"
-              >
-                <Download className="w-4 h-4" />
-                <span>PDF</span>
-              </button>
-            </div>
-          </div>
+      {/* Simple Header with Today's Edition */}
+      <div className="bg-white border-b px-4 py-4">
+        <div className="container mx-auto text-center">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Today's Edition</h1>
+          <p className="text-gray-600 text-sm md:text-base">{date}</p>
         </div>
       </div>
 
