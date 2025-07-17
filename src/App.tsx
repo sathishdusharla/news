@@ -52,7 +52,7 @@ function App() {
               </button>
             </div>
             
-            {viewMode === 'today' && (
+            {(viewMode === 'today' || viewMode === 'archive') && (
               <button
                 onClick={refreshEPaper}
                 disabled={isLoading}

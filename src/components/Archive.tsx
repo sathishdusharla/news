@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Download, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import EPaperViewer from './EPaperViewer';
-import { EPaperInfo } from '../services/epaperService';
+import { EPaperInfo, EPaperService } from '../services/epaperService';
 
 const Archive: React.FC = () => {
   const [availablePapers, setAvailablePapers] = useState<EPaperInfo[]>([]);
@@ -17,39 +17,18 @@ const Archive: React.FC = () => {
   const loadAvailablePapers = async () => {
     try {
       setIsLoading(true);
-      // Generate mock data for demonstration - replace with actual API call
-      const mockPapers: EPaperInfo[] = [];
-      const today = new Date();
-      
-      for (let i = 0; i < 30; i++) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
-        
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        const shortYear = String(year).slice(-2);
-        
-        const displayDate = `${day}.${month}.${year}`;
-        const fileName = `epaper-${day}-${month}-${shortYear}.pdf`;
-        
-        // For demo, assume first 3 days have papers available
-        const exists = i < 3;
-        
-        mockPapers.push({
-          date: displayDate,
-          fileName,
-          url: `/${fileName}`,
-          exists
-        });
-      }
-      
-      setAvailablePapers(mockPapers);
+      const epaperService = EPaperService.getInstance();
+      const papers = await epaperService.getAvailableEPapers(30);
+      setAvailablePapers(papers);
     } catch (error) {
       console.error('Error loading available papers:', error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const refreshArchive = () => {
+    loadAvailablePapers();
   };
 
   const handleViewPaper = (paper: EPaperInfo) => {
@@ -105,6 +84,13 @@ const Archive: React.FC = () => {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">News Archive</h1>
         <p className="text-gray-600">Browse previous e-papers</p>
+        <button
+          onClick={refreshArchive}
+          disabled={isLoading}
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
+        >
+          {isLoading ? 'Refreshing...' : 'Refresh Archive'}
+        </button>
       </div>
 
       {isLoading ? (

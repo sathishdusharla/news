@@ -168,19 +168,14 @@ export class EPaperService {
   }
 
   /**
-   * Get list of available e-papers (this would need to be implemented based on your backend)
+   * Get list of available e-papers for the archive
    */
-  public async getAvailableEPapers(): Promise<EPaperInfo[]> {
-    // This is a placeholder. In a real implementation, you would:
-    // 1. Make an API call to get list of available PDFs
-    // 2. Or scan the public directory
-    // 3. Or maintain a manifest file of available papers
-    
+  public async getAvailableEPapers(daysToCheck: number = 30): Promise<EPaperInfo[]> {
     const papers: EPaperInfo[] = [];
     const today = new Date();
     
-    // Check for papers from the last 7 days
-    for (let i = 0; i < 7; i++) {
+    // Check for papers from the last N days
+    for (let i = 0; i < daysToCheck; i++) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
       
@@ -188,7 +183,15 @@ export class EPaperService {
       papers.push(paperInfo);
     }
     
-    return papers.filter(paper => paper.exists);
+    return papers;
+  }
+
+  /**
+   * Get only available e-papers (that exist)
+   */
+  public async getExistingEPapers(daysToCheck: number = 30): Promise<EPaperInfo[]> {
+    const allPapers = await this.getAvailableEPapers(daysToCheck);
+    return allPapers.filter(paper => paper.exists);
   }
 
   /**
