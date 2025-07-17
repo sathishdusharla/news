@@ -6,14 +6,14 @@ const Header = () => {
 
   return (
     <header className="bg-gray-50 border-b">
-      <div className="container mx-auto px-4 py-2">
+      <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
             <img 
               src="/aksharakalam.png" 
               alt="Aksharakalam" 
-              className="h-12 md:h-14 w-auto"
+              className="h-16 md:h-20 w-auto"
             />
           </div>
           

@@ -70,6 +70,7 @@ function App() {
           <EPaperViewer
             pdfUrl={ePaperInfo?.exists ? ePaperInfo.url : null}
             date={ePaperInfo?.date || new Date().toLocaleDateString()}
+            setViewMode={setViewMode}
           />
           
           {/* Upload Instructions - Only show when e-paper doesn't exist */}

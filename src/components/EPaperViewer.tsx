@@ -10,9 +10,10 @@ if (typeof window !== 'undefined') {
 interface EPaperViewerProps {
   pdfUrl: string | null;
   date: string;
+  setViewMode?: (mode: 'today' | 'archive' | 'design') => void;
 }
 
-const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
+const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date, setViewMode }) => {
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [scale, setScale] = useState<number>(1.0);
@@ -206,9 +207,87 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
         </div>
       </div>
 
+      {/* Page Navigation Section - Similar to screenshot */}
+      {numPages > 1 && (
+        <div className="bg-gray-50 border-b px-4 py-3">
+          <div className="container mx-auto flex items-center justify-center gap-4">
+            <div className="flex items-center gap-2">
+              <select
+                value={currentPage}
+                onChange={(e) => setCurrentPage(Number(e.target.value))}
+                className="border rounded px-3 py-1 bg-white text-sm"
+              >
+                {Array.from({ length: numPages }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    Page {i + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            {/* Page Number Buttons */}
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(numPages, 10) }, (_, i) => {
+                const pageNum = i + 1;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`w-8 h-8 text-sm rounded transition-colors ${
+                      currentPage === pageNum
+                        ? 'bg-gray-800 text-white'
+                        : 'bg-white text-gray-700 hover:bg-gray-200 border'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+              {numPages > 10 && (
+                <>
+                  <span className="text-gray-500">...</span>
+                  <button
+                    onClick={() => setCurrentPage(numPages)}
+                    className={`w-8 h-8 text-sm rounded transition-colors ${
+                      currentPage === numPages
+                        ? 'bg-gray-800 text-white'
+                        : 'bg-white text-gray-700 hover:bg-gray-200 border'
+                    }`}
+                  >
+                    {numPages}
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Quick Actions */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleDownload}
+                className="px-3 py-1 bg-yellow-400 text-gray-800 rounded text-sm font-medium hover:bg-yellow-500 transition-colors"
+              >
+                PDF
+              </button>
+              <button
+                onClick={() => window.print()}
+                className="px-3 py-1 bg-yellow-400 text-gray-800 rounded text-sm font-medium hover:bg-yellow-500 transition-colors"
+              >
+                📋 Clip
+              </button>
+              <button
+                onClick={() => setViewMode && setViewMode('archive')}
+                className="px-3 py-1 bg-gray-600 text-white rounded text-sm font-medium hover:bg-gray-700 transition-colors"
+              >
+                📁 Archive
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* PDF Viewer - Full width without borders */}
       <div className="bg-white">
-        <div className="flex justify-center bg-white">
+        <div className="flex justify-center bg-white relative">
           {isLoading && (
             <div className="flex items-center justify-center min-h-[600px]">
               <div className="text-center">
@@ -229,7 +308,29 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
           )}
 
           {pdfUrl && !error && (
-            <div className="w-full max-w-full">
+            <div className="w-full max-w-full relative">
+              {/* Left Navigation Button */}
+              {currentPage > 1 && (
+                <button
+                  onClick={goToPrevPage}
+                  className="fixed left-4 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-20 hover:bg-opacity-40 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm"
+                  title="Previous Page"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+              )}
+
+              {/* Right Navigation Button */}
+              {currentPage < numPages && (
+                <button
+                  onClick={goToNextPage}
+                  className="fixed right-4 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-20 hover:bg-opacity-40 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm"
+                  title="Next Page"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              )}
+
               <Document
                 file={pdfUrl}
                 onLoadSuccess={onDocumentLoadSuccess}
