@@ -18,7 +18,8 @@ const Archive: React.FC = () => {
     try {
       setIsLoading(true);
       const epaperService = EPaperService.getInstance();
-      const papers = await epaperService.getAvailableEPapers(30);
+      // Get archive papers (excluding today's edition)
+      const papers = await epaperService.getArchiveEPapers(30);
       setAvailablePapers(papers);
     } catch (error) {
       console.error('Error loading available papers:', error);

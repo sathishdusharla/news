@@ -13,7 +13,22 @@ export default defineConfig({
       allow: ['..']
     }
   },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false, // Disable sourcemaps for production
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          pdf: ['react-pdf', 'pdfjs-dist']
+        }
+      }
+    }
+  },
   define: {
     global: 'globalThis',
-  }
+  },
+  base: '/' // Ensure correct base path for Netlify
 });

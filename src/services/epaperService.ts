@@ -88,7 +88,7 @@ export class EPaperService {
   }
 
   /**
-   * Find today's e-paper PDF file
+   * Find today's e-paper PDF file with optimized parallel checking
    */
   public async getTodayEPaper(): Promise<EPaperInfo> {
     const dateStr = this.getTodayDateString();
@@ -98,21 +98,27 @@ export class EPaperService {
     console.log('Looking for e-paper with date string:', dateStr);
     console.log('Possible filenames:', possibleFilenames);
 
-    // Try to find an existing PDF file
-    for (const filename of possibleFilenames) {
+    // Check files in parallel for faster loading
+    const fileCheckPromises = possibleFilenames.map(async (filename) => {
       const url = `${this.baseUrl}${filename}`;
-      console.log('Checking file:', url);
       const exists = await this.checkFileExists(url);
-      
-      if (exists) {
-        console.log('Found e-paper:', filename);
-        return {
-          date: displayDate,
-          fileName: filename,
-          url: url,
-          exists: true
-        };
-      }
+      return { filename, url, exists };
+    });
+
+    // Wait for all checks to complete
+    const results = await Promise.all(fileCheckPromises);
+    
+    // Find the first existing file
+    const existingFile = results.find(result => result.exists);
+    
+    if (existingFile) {
+      console.log('Found e-paper:', existingFile.filename);
+      return {
+        date: displayDate,
+        fileName: existingFile.filename,
+        url: existingFile.url,
+        exists: true
+      };
     }
 
     console.log('No e-paper found for today');
@@ -127,7 +133,7 @@ export class EPaperService {
   }
 
   /**
-   * Get e-paper for a specific date
+   * Get e-paper for a specific date with optimized parallel checking
    */
   public async getEPaperForDate(date: Date): Promise<EPaperInfo> {
     const day = String(date.getDate()).padStart(2, '0');
@@ -142,19 +148,26 @@ export class EPaperService {
 
     const possibleFilenames = this.generatePossibleFilenames(dateStr);
 
-    // Try to find an existing PDF file
-    for (const filename of possibleFilenames) {
+    // Check files in parallel for faster loading
+    const fileCheckPromises = possibleFilenames.map(async (filename) => {
       const url = `${this.baseUrl}${filename}`;
       const exists = await this.checkFileExists(url);
-      
-      if (exists) {
-        return {
-          date: displayDate,
-          fileName: filename,
-          url: url,
-          exists: true
-        };
-      }
+      return { filename, url, exists };
+    });
+
+    // Wait for all checks to complete
+    const results = await Promise.all(fileCheckPromises);
+    
+    // Find the first existing file
+    const existingFile = results.find(result => result.exists);
+    
+    if (existingFile) {
+      return {
+        date: displayDate,
+        fileName: existingFile.filename,
+        url: existingFile.url,
+        exists: true
+      };
     }
 
     // If no file found, return info for the preferred filename
@@ -168,20 +181,24 @@ export class EPaperService {
   }
 
   /**
-   * Get list of available e-papers for the archive
+   * Get list of available e-papers for the archive with optimized batch checking
    */
   public async getAvailableEPapers(daysToCheck: number = 30): Promise<EPaperInfo[]> {
     const papers: EPaperInfo[] = [];
     const today = new Date();
     
-    // Check for papers from the last N days
+    // Prepare all date checks
+    const dateCheckPromises: Promise<EPaperInfo>[] = [];
+    
     for (let i = 0; i < daysToCheck; i++) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
-      
-      const paperInfo = await this.getEPaperForDate(date);
-      papers.push(paperInfo);
+      dateCheckPromises.push(this.getEPaperForDate(date));
     }
+    
+    // Execute all checks in parallel
+    const results = await Promise.all(dateCheckPromises);
+    papers.push(...results);
     
     return papers;
   }
@@ -192,6 +209,21 @@ export class EPaperService {
   public async getExistingEPapers(daysToCheck: number = 30): Promise<EPaperInfo[]> {
     const allPapers = await this.getAvailableEPapers(daysToCheck);
     return allPapers.filter(paper => paper.exists);
+  }
+
+  /**
+   * Get all available e-papers excluding today's edition
+   */
+  public async getArchiveEPapers(daysToCheck: number = 30): Promise<EPaperInfo[]> {
+    const allPapers = await this.getAvailableEPapers(daysToCheck);
+    const todayDateStr = this.getTodayDateString();
+    
+    // Filter out today's paper and only return existing papers
+    return allPapers.filter(paper => {
+      // Extract date from filename to check if it's today's paper
+      const isToday = paper.fileName.includes(todayDateStr);
+      return paper.exists && !isToday;
+    });
   }
 
   /**

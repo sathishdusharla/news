@@ -95,7 +95,7 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date, setViewMode }
       <div className="bg-white min-h-screen">
         <div className="bg-white border-b px-4 py-4">
           <div className="container mx-auto text-center">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Today's Edition</h1>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-2" style={{ fontFamily: 'Times New Roman, serif' }}>Today's Edition</h1>
             <p className="text-gray-600 text-sm md:text-base">{date}</p>
           </div>
         </div>
@@ -114,89 +114,134 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date, setViewMode }
   return (
     <div className="bg-white">
       {/* Simple Header with Today's Edition */}
-      <div className="bg-white border-b px-4 py-4">
+      <div className="bg-white border-b px-4 py-3 sm:py-4">
         <div className="container mx-auto text-center">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Today's Edition</h1>
-          <p className="text-gray-600 text-sm md:text-base">{date}</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-1 sm:mb-2" style={{ fontFamily: 'Times New Roman, serif' }}>Today's Edition</h1>
+          <p className="text-gray-600 text-xs sm:text-sm md:text-base">{date}</p>
         </div>
       </div>
 
-      {/* Page Navigation Section - Similar to screenshot */}
+      {/* Page Navigation Section - Mobile Bottom Bar & Desktop Top Bar */}
       {numPages > 1 && (
-        <div className="bg-gray-50 border-b px-4 py-3">
-          <div className="container mx-auto flex items-center justify-center gap-4">
-            <div className="flex items-center gap-2">
-              <select
-                value={currentPage}
-                onChange={(e) => setCurrentPage(Number(e.target.value))}
-                className="border rounded px-3 py-1 bg-white text-sm"
-              >
-                {Array.from({ length: numPages }, (_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    Page {i + 1}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            {/* Page Number Buttons */}
-            <div className="flex items-center gap-1">
-              {Array.from({ length: Math.min(numPages, 10) }, (_, i) => {
-                const pageNum = i + 1;
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => setCurrentPage(pageNum)}
-                    className={`w-8 h-8 text-sm rounded transition-colors ${
-                      currentPage === pageNum
-                        ? 'bg-gray-800 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-200 border'
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-              {numPages > 10 && (
-                <>
-                  <span className="text-gray-500">...</span>
-                  <button
-                    onClick={() => setCurrentPage(numPages)}
-                    className={`w-8 h-8 text-sm rounded transition-colors ${
-                      currentPage === numPages
-                        ? 'bg-gray-800 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-200 border'
-                    }`}
-                  >
-                    {numPages}
-                  </button>
-                </>
-              )}
-            </div>
+        <>
+          {/* Desktop Layout - Top Bar */}
+          <div className="hidden sm:block bg-gray-50 border-b px-4 py-3">
+            <div className="container mx-auto flex items-center justify-center gap-4">
+              <div className="flex items-center gap-2">
+                <select
+                  value={currentPage}
+                  onChange={(e) => setCurrentPage(Number(e.target.value))}
+                  className="border rounded px-3 py-1 bg-white text-sm"
+                >
+                  {Array.from({ length: numPages }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      Page {i + 1}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* Page Number Buttons */}
+              <div className="flex items-center gap-1">
+                {Array.from({ length: Math.min(numPages, 10) }, (_, i) => {
+                  const pageNum = i + 1;
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`w-8 h-8 text-sm rounded transition-colors ${
+                        currentPage === pageNum
+                          ? 'bg-gray-800 text-white'
+                          : 'bg-white text-gray-700 hover:bg-gray-200 border'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                {numPages > 10 && (
+                  <>
+                    <span className="text-gray-500">...</span>
+                    <button
+                      onClick={() => setCurrentPage(numPages)}
+                      className={`w-8 h-8 text-sm rounded transition-colors ${
+                        currentPage === numPages
+                          ? 'bg-gray-800 text-white'
+                          : 'bg-white text-gray-700 hover:bg-gray-200 border'
+                      }`}
+                    >
+                      {numPages}
+                    </button>
+                  </>
+                )}
+              </div>
 
-            {/* Quick Actions */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleDownload}
-                className="px-3 py-1 bg-yellow-400 text-gray-800 rounded text-sm font-medium hover:bg-yellow-500 transition-colors"
-              >
-                PDF
-              </button>
-              <button
-                onClick={() => window.print()}
-                className="px-3 py-1 bg-yellow-400 text-gray-800 rounded text-sm font-medium hover:bg-yellow-500 transition-colors"
-              >
-                📋 Clip
-              </button>
-              <button
-                onClick={() => setViewMode && setViewMode('archive')}
-                className="px-3 py-1 bg-gray-600 text-white rounded text-sm font-medium hover:bg-gray-700 transition-colors"
-              >
-                📁 Archive
-              </button>
+              {/* Quick Actions */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleDownload}
+                  className="px-3 py-1 bg-yellow-400 text-gray-800 rounded text-sm font-medium hover:bg-yellow-500 transition-colors"
+                >
+                  PDF
+                </button>
+                <button
+                  onClick={() => window.print()}
+                  className="px-3 py-1 bg-yellow-400 text-gray-800 rounded text-sm font-medium hover:bg-yellow-500 transition-colors"
+                >
+                  📋 Clip
+                </button>
+                <button
+                  onClick={() => setViewMode && setViewMode('archive')}
+                  className="px-3 py-1 bg-gray-600 text-white rounded text-sm font-medium hover:bg-gray-700 transition-colors"
+                >
+                  📁 Archive
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+
+          {/* Mobile Layout - Fixed Bottom Bar */}
+          <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-gray-800 text-white z-40 border-t border-gray-600">
+            <div className="px-3 py-2">
+              <div className="flex items-center justify-between gap-3">
+                {/* Page Selector */}
+                <select
+                  value={currentPage}
+                  onChange={(e) => setCurrentPage(Number(e.target.value))}
+                  className="bg-gray-700 text-white border border-gray-600 rounded px-2 py-1 text-xs flex-1 max-w-[120px]"
+                >
+                  {Array.from({ length: numPages }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      Page {i + 1}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleDownload}
+                    className="px-3 py-1 bg-yellow-400 text-gray-800 rounded text-xs font-medium"
+                  >
+                    PDF
+                  </button>
+                  <button
+                    onClick={() => window.print()}
+                    className="px-3 py-1 bg-yellow-400 text-gray-800 rounded text-xs font-medium"
+                  >
+                    📋
+                  </button>
+                  <button
+                    onClick={() => setViewMode && setViewMode('archive')}
+                    className="px-3 py-1 bg-gray-600 text-white rounded text-xs font-medium"
+                  >
+                    📁
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       )}
 
       {/* PDF Viewer - Full width without borders */}
