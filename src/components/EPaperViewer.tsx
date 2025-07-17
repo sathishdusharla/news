@@ -23,11 +23,11 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
   const getResponsiveScale = () => {
     if (typeof window !== 'undefined') {
       const width = window.innerWidth;
-      if (width < 768) return 0.4; // Mobile
-      if (width < 1024) return 0.6; // Tablet
-      return 1.0; // Desktop
+      if (width < 768) return 0.5; // Mobile
+      if (width < 1024) return 0.8; // Tablet
+      return 1.2; // Desktop - larger for better readability
     }
-    return 1.0;
+    return 1.2;
   };
 
   useEffect(() => {
@@ -105,186 +105,151 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
 
   if (!pdfUrl) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-8">Today's News</h1>
-          <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg shadow-md p-8">
-            <Calendar className="w-24 h-24 text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-4">No E-Paper Available</h3>
-            <p className="text-gray-500 text-center max-w-md">
-              Today's e-paper ({date}) is not available yet.<br />
-              Please check back later.
-            </p>
+      <div className="bg-white min-h-screen">
+        <div className="bg-white border-b px-4 py-3">
+          <div className="container mx-auto text-center">
+            <span className="text-gray-600 text-sm">{date}</span>
           </div>
+        </div>
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white p-8">
+          <Calendar className="w-24 h-24 text-gray-400 mb-4" />
+          <h3 className="text-xl font-semibold text-gray-600 mb-4">No E-Paper Available</h3>
+          <p className="text-gray-500 text-center max-w-md">
+            Today's e-paper ({date}) is not available yet.<br />
+            Please check back later.
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="bg-white">
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Today's News</h1>
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-          <span className="text-gray-600">{date}</span>
-          {numPages > 0 && (
-            <>
-              <span className="text-gray-400">•</span>
-              <span className="text-gray-600">Page {currentPage} of {numPages}</span>
-            </>
-          )}
+      <div className="bg-white border-b px-4 py-3">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <span className="text-gray-600 text-sm">{date}</span>
+            {numPages > 0 && (
+              <>
+                <span className="text-gray-400">•</span>
+                <span className="text-gray-600 text-sm">Page {currentPage} of {numPages}</span>
+              </>
+            )}
+          </div>
+          
+          {/* Controls */}
+          <div className="flex items-center gap-2">
+            {/* Navigation */}
+            <div className="flex items-center space-x-1">
+              <button
+                onClick={goToPrevPage}
+                disabled={currentPage <= 1}
+                className="flex items-center space-x-1 px-3 py-1 text-sm bg-gray-100 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Prev</span>
+              </button>
+
+              <select
+                value={currentPage}
+                onChange={(e) => setCurrentPage(Number(e.target.value))}
+                className="border rounded px-2 py-1 bg-white text-sm"
+              >
+                {Array.from({ length: numPages }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                onClick={goToNextPage}
+                disabled={currentPage >= numPages}
+                className="flex items-center space-x-1 px-3 py-1 text-sm bg-gray-100 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 transition-colors"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+            
+            {/* Zoom and Download */}
+            <div className="flex items-center space-x-1">
+              <button
+                onClick={zoomOut}
+                className="p-1 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
+                title="Zoom Out"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <span className="text-xs px-1 min-w-[45px] text-center">{Math.round(scale * 100)}%</span>
+              <button
+                onClick={zoomIn}
+                className="p-1 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
+                title="Zoom In"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+              
+              <div className="w-px h-4 bg-gray-300 mx-1"></div>
+              
+              <button
+                onClick={handleDownload}
+                className="flex items-center space-x-1 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                title="Download PDF"
+              >
+                <Download className="w-4 h-4" />
+                <span>PDF</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left Sidebar - Page Thumbnails - Hidden on mobile/tablet */}
-        <div className="hidden lg:block w-48 flex-shrink-0">
-          <h3 className="text-lg font-semibold mb-4">Pages</h3>
-          <div className="space-y-4">
-            {numPages > 0 && Array.from({ length: numPages }, (_, i) => (
-              <div key={i + 1} className="text-center">
-                <div 
-                  className={`border-2 bg-white p-1 hover:shadow-md transition-all cursor-pointer rounded ${
-                    currentPage === i + 1 ? 'border-blue-500 shadow-md' : 'border-gray-200'
-                  }`}
-                  onClick={() => setCurrentPage(i + 1)}
-                >
-                  <div className="w-full h-32 bg-gray-50 flex items-center justify-center overflow-hidden rounded">
-                    <Document file={pdfUrl} loading={null}>
-                      <Page
-                        pageNumber={i + 1}
-                        width={120}
-                        loading={null}
-                        renderTextLayer={false}
-                        renderAnnotationLayer={false}
-                        className="max-w-full max-h-full"
-                      />
-                    </Document>
-                  </div>
-                </div>
-                <p className="mt-1 text-xs text-gray-600">{i + 1}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="flex-1">
-          {/* Controls */}
-          <div className="bg-white rounded-lg shadow-sm border p-4 mb-6">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              {/* Navigation */}
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={goToPrevPage}
-                  disabled={currentPage <= 1}
-                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 transition-colors"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Previous</span>
-                </button>
-
-                <select
-                  value={currentPage}
-                  onChange={(e) => setCurrentPage(Number(e.target.value))}
-                  className="border rounded px-3 py-2 bg-white"
-                >
-                  {Array.from({ length: numPages }, (_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      Page {i + 1}
-                    </option>
-                  ))}
-                </select>
-
-                <button
-                  onClick={goToNextPage}
-                  disabled={currentPage >= numPages}
-                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 transition-colors"
-                >
-                  <span>Next</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-              
-              {/* Zoom and Download */}
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={zoomOut}
-                  className="p-2 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
-                  title="Zoom Out"
-                >
-                  <ZoomOut className="w-4 h-4" />
-                </button>
-                <span className="text-sm px-2 min-w-[60px] text-center">{Math.round(scale * 100)}%</span>
-                <button
-                  onClick={zoomIn}
-                  className="p-2 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
-                  title="Zoom In"
-                >
-                  <ZoomIn className="w-4 h-4" />
-                </button>
-                
-                <div className="w-px h-6 bg-gray-300 mx-2"></div>
-                
-                <button
-                  onClick={handleDownload}
-                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                  title="Download PDF"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Download</span>
-                </button>
+      {/* PDF Viewer - Full width without borders */}
+      <div className="bg-white">
+        <div className="flex justify-center bg-white">
+          {isLoading && (
+            <div className="flex items-center justify-center min-h-[600px]">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading today's news...</p>
               </div>
             </div>
-          </div>
+          )}
 
-          {/* PDF Viewer */}
-          <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-            <div className="flex justify-center bg-gray-50 p-4">
-              {isLoading && (
-                <div className="flex items-center justify-center min-h-[600px]">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading today's news...</p>
-                  </div>
-                </div>
-              )}
+          {error && (
+            <div className="flex items-center justify-center min-h-[600px]">
+              <div className="text-center text-red-600">
+                <Calendar className="w-16 h-16 text-red-400 mx-auto mb-4" />
+                <p className="text-lg font-semibold mb-2">Error Loading E-Paper</p>
+                <p className="text-sm">{error}</p>
+              </div>
+            </div>
+          )}
 
-              {error && (
-                <div className="flex items-center justify-center min-h-[600px]">
-                  <div className="text-center text-red-600">
-                    <Calendar className="w-16 h-16 text-red-400 mx-auto mb-4" />
-                    <p className="text-lg font-semibold mb-2">Error Loading E-Paper</p>
-                    <p className="text-sm">{error}</p>
-                  </div>
-                </div>
-              )}
-
-              {pdfUrl && !error && (
-                <div className="w-full max-w-full">
-                  <Document
-                    file={pdfUrl}
-                    onLoadSuccess={onDocumentLoadSuccess}
-                    onLoadError={onDocumentLoadError}
+          {pdfUrl && !error && (
+            <div className="w-full max-w-full">
+              <Document
+                file={pdfUrl}
+                onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={onDocumentLoadError}
+                loading={null}
+                className="flex justify-center"
+              >
+                <div className="inline-block">
+                  <Page
+                    pageNumber={currentPage}
+                    scale={scale}
                     loading={null}
-                    className="flex justify-center"
-                  >
-                    <div className="inline-block">
-                      <Page
-                        pageNumber={currentPage}
-                        scale={scale}
-                        loading={null}
-                        renderTextLayer={false}
-                        renderAnnotationLayer={false}
-                        className="shadow-lg max-w-full"
-                      />
-                    </div>
-                  </Document>
+                    renderTextLayer={false}
+                    renderAnnotationLayer={false}
+                    className="max-w-full"
+                  />
                 </div>
-              )}
+              </Document>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
