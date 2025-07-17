@@ -9,9 +9,13 @@ function App() {
   const [viewMode, setViewMode] = useState<'today' | 'archive'>('today');
   const { ePaperInfo } = useEPaper();
 
+  const handleLogoClick = () => {
+    setViewMode('today');
+  };
+
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <Header onLogoClick={handleLogoClick} />
       
       {viewMode === 'today' ? (
         <>

@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Home, Info, Phone, Shield, Menu, X } from 'lucide-react';
 
-const Header = () => {
+interface HeaderProps {
+  onLogoClick?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -13,7 +17,8 @@ const Header = () => {
             <img 
               src="/aksharakalam.png" 
               alt="Aksharakalam" 
-              className="h-16 md:h-20 w-auto"
+              className="h-16 md:h-20 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={onLogoClick}
             />
           </div>
           
