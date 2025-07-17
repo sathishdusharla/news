@@ -1,0 +1,9 @@
+# Sample E-Paper PDF
+
+This is a placeholder file. Replace this with your actual PDF file.
+
+To test the e-paper functionality, create a PDF file with today's date in the filename.
+
+For today (July 17, 2025), use: epaper-17-07-25.pdf
+
+The application will automatically detect and display the PDF.
