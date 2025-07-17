@@ -1,0 +1,228 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom fonts for Telugu text */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap');
+
+@layer base {
+  body {
+    font-family: 'Inter', 'Noto Sans Telugu', sans-serif;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Telugu text styling */
+.telugu-text {
+  font-family: 'Noto Sans Telugu', sans-serif;
+  line-height: 1.6;
+}
+
+/* Newspaper styling */
+.newspaper-content {
+  font-family: 'Times New Roman', serif;
+  line-height: 1.5;
+}
+
+.newspaper-content h1,
+.newspaper-content h2,
+.newspaper-content h3,
+.newspaper-content h4 {
+  font-family: 'Noto Sans Telugu', serif;
+  font-weight: bold;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .newspaper-content {
+    font-size: 12px;
+  }
+  
+  .telugu-text {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  
+  /* Ensure text is readable on mobile */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.3;
+  }
+  
+  /* Mobile-specific spacing */
+  .space-y-3 > * + * {
+    margin-top: 0.75rem;
+  }
+  
+  .space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .newspaper-content {
+    font-size: 14px;
+  }
+  
+  .telugu-text {
+    font-size: 14px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .newspaper-content {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  /* Hide mobile navigation on print */
+  .fixed.bottom-0 {
+    display: none !important;
+  }
+}
+
+/* Button hover effects */
+button:hover {
+  transform: translateY(-1px);
+  transition: transform 0.2s ease;
+}
+
+/* Image hover effects */
+img:hover {
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+/* Link hover effects */
+a:hover {
+  text-decoration: underline;
+}
+
+/* Page thumbnail hover effect */
+.page-thumbnail:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
+
+/* Mobile menu animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-menu {
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 640px) {
+  .grid-cols-3 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+/* Ensure proper spacing on mobile */
+@media (max-width: 768px) {
+  .pb-20 {
+    padding-bottom: 5rem;
+  }
+}
+
+/* Touch-friendly button sizes on mobile */
+@media (max-width: 768px) {
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  select {
+    min-height: 44px;
+  }
+}
+
+/* Improve readability on small screens */
+@media (max-width: 480px) {
+  .text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+/* Ensure images don't overflow on mobile */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile-first responsive design */
+.responsive-text {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+@media (min-width: 768px) {
+  .responsive-text {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+/* Smooth transitions for responsive elements */
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Focus styles for accessibility */
+button:focus,
+select:focus,
+a:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
