@@ -55,50 +55,52 @@ function App() {
       </div>
 
       {viewMode === 'epaper' ? (
-        <div className="container mx-auto px-4 py-6">
+        <>
           <EPaperViewer
             pdfUrl={ePaperInfo?.exists ? ePaperInfo.url : null}
             date={ePaperInfo?.date || new Date().toLocaleDateString()}
           />
           
-          {/* Upload Instructions */}
+          {/* Upload Instructions - Only show when e-paper doesn't exist */}
           {ePaperInfo && !ePaperInfo.exists && (
-            <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-yellow-800 mb-2">
-                Upload Today's E-Paper
-              </h3>
-              <p className="text-yellow-700 mb-2">
-                To display today's e-paper, please upload the PDF file with one of these names to the public folder:
-              </p>
-              <ul className="text-yellow-700 text-sm space-y-1">
-                <li>• <code className="bg-yellow-100 px-1 rounded">epaper-{(() => {
-                  const today = new Date();
-                  const day = String(today.getDate()).padStart(2, '0');
-                  const month = String(today.getMonth() + 1).padStart(2, '0');
-                  const year = String(today.getFullYear()).slice(-2);
-                  return `${day}-${month}-${year}`;
-                })()}.pdf</code></li>
-                <li>• <code className="bg-yellow-100 px-1 rounded">newspaper-{(() => {
-                  const today = new Date();
-                  const day = String(today.getDate()).padStart(2, '0');
-                  const month = String(today.getMonth() + 1).padStart(2, '0');
-                  const year = String(today.getFullYear()).slice(-2);
-                  return `${day}-${month}-${year}`;
-                })()}.pdf</code></li>
-                <li>• <code className="bg-yellow-100 px-1 rounded">flashindia-{(() => {
-                  const today = new Date();
-                  const day = String(today.getDate()).padStart(2, '0');
-                  const month = String(today.getMonth() + 1).padStart(2, '0');
-                  const year = String(today.getFullYear()).slice(-2);
-                  return `${day}-${month}-${year}`;
-                })()}.pdf</code></li>
-              </ul>
-              <p className="text-yellow-700 text-sm mt-2">
-                Format: DD-MM-YY (e.g., 17-07-25 for July 17, 2025)
-              </p>
+            <div className="container mx-auto px-4 py-6">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+                  Upload Today's E-Paper
+                </h3>
+                <p className="text-yellow-700 mb-2">
+                  To display today's e-paper, please upload the PDF file with one of these names to the public folder:
+                </p>
+                <ul className="text-yellow-700 text-sm space-y-1">
+                  <li>• <code className="bg-yellow-100 px-1 rounded">epaper-{(() => {
+                    const today = new Date();
+                    const day = String(today.getDate()).padStart(2, '0');
+                    const month = String(today.getMonth() + 1).padStart(2, '0');
+                    const year = String(today.getFullYear()).slice(-2);
+                    return `${day}-${month}-${year}`;
+                  })()}.pdf</code></li>
+                  <li>• <code className="bg-yellow-100 px-1 rounded">newspaper-{(() => {
+                    const today = new Date();
+                    const day = String(today.getDate()).padStart(2, '0');
+                    const month = String(today.getMonth() + 1).padStart(2, '0');
+                    const year = String(today.getFullYear()).slice(-2);
+                    return `${day}-${month}-${year}`;
+                  })()}.pdf</code></li>
+                  <li>• <code className="bg-yellow-100 px-1 rounded">flashindia-{(() => {
+                    const today = new Date();
+                    const day = String(today.getDate()).padStart(2, '0');
+                    const month = String(today.getMonth() + 1).padStart(2, '0');
+                    const year = String(today.getFullYear()).slice(-2);
+                    return `${day}-${month}-${year}`;
+                  })()}.pdf</code></li>
+                </ul>
+                <p className="text-yellow-700 text-sm mt-2">
+                  Format: DD-MM-YY (e.g., 17-07-25 for July 17, 2025)
+                </p>
+              </div>
             </div>
           )}
-        </div>
+        </>
       ) : (
         <>
           <PageNavigation />

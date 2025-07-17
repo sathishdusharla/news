@@ -76,9 +76,13 @@ export class EPaperService {
    */
   private async checkFileExists(url: string): Promise<boolean> {
     try {
-      const response = await fetch(url, { method: 'HEAD' });
-      return response.ok;
+      const response = await fetch(url, { 
+        method: 'HEAD',
+        cache: 'no-cache'
+      });
+      return response.ok && response.status === 200;
     } catch (error) {
+      console.log(`File not found: ${url}`);
       return false;
     }
   }
@@ -91,12 +95,17 @@ export class EPaperService {
     const displayDate = this.getDisplayDate();
     const possibleFilenames = this.generatePossibleFilenames(dateStr);
 
+    console.log('Looking for e-paper with date string:', dateStr);
+    console.log('Possible filenames:', possibleFilenames);
+
     // Try to find an existing PDF file
     for (const filename of possibleFilenames) {
       const url = `${this.baseUrl}${filename}`;
+      console.log('Checking file:', url);
       const exists = await this.checkFileExists(url);
       
       if (exists) {
+        console.log('Found e-paper:', filename);
         return {
           date: displayDate,
           fileName: filename,
@@ -106,6 +115,7 @@ export class EPaperService {
       }
     }
 
+    console.log('No e-paper found for today');
     // If no file found, return info for the preferred filename
     const preferredFilename = `epaper-${dateStr}.pdf`;
     return {

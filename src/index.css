@@ -1,9 +1,9 @@
+/* Custom fonts for Telugu text */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Custom fonts for Telugu text */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap');
 
 /* React PDF styles */
 .react-pdf__Page {
