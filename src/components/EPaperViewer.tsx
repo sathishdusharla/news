@@ -10,7 +10,7 @@ if (typeof window !== 'undefined') {
 interface EPaperViewerProps {
   pdfUrl: string | null;
   date: string;
-  setViewMode?: (mode: 'today' | 'archive' | 'design') => void;
+  setViewMode?: (mode: 'today' | 'archive') => void;
 }
 
 const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date, setViewMode }) => {

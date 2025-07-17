@@ -1,70 +1,18 @@
 import { useState } from 'react';
 import Header from './components/Header';
-import PageNavigation from './components/PageNavigation';
-import NewspaperLayout from './components/NewspaperLayout';
 import EPaperViewer from './components/EPaperViewer';
 import Archive from './components/Archive';
 import Footer from './components/Footer';
 import { useEPaper } from './hooks/useEPaper';
 
 function App() {
-  const [viewMode, setViewMode] = useState<'today' | 'archive' | 'design'>('today');
-  const { ePaperInfo, isLoading, refreshEPaper } = useEPaper();
+  const [viewMode, setViewMode] = useState<'today' | 'archive'>('today');
+  const { ePaperInfo } = useEPaper();
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
       
-      {/* Mode Toggle */}
-      <div className="bg-white border-b">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between py-2">
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setViewMode('today')}
-                className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                  viewMode === 'today'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                Today's News
-              </button>
-              <button
-                onClick={() => setViewMode('archive')}
-                className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                  viewMode === 'archive'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                Archive
-              </button>
-              <button
-                onClick={() => setViewMode('design')}
-                className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                  viewMode === 'design'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                News Layout
-              </button>
-            </div>
-            
-            {(viewMode === 'today' || viewMode === 'archive') && (
-              <button
-                onClick={refreshEPaper}
-                disabled={isLoading}
-                className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 transition-colors text-sm"
-              >
-                {isLoading ? 'Refreshing...' : 'Refresh'}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
       {viewMode === 'today' ? (
         <>
           <EPaperViewer
@@ -95,13 +43,8 @@ function App() {
             </div>
           )}
         </>
-      ) : viewMode === 'archive' ? (
-        <Archive />
       ) : (
-        <>
-          <PageNavigation />
-          <NewspaperLayout />
-        </>
+        <Archive />
       )}
       
       <Footer />
