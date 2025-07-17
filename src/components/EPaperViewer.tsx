@@ -105,76 +105,16 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
 
   if (!pdfUrl) {
     return (
-      <div className="container mx-auto px-2 md:px-4 py-4 md:py-8 pb-20 md:pb-8">
-        <div className="flex flex-col md:flex-row gap-4 md:gap-8">
-          {/* Left Sidebar - Page Thumbnails - Hidden on mobile */}
-          <div className="hidden md:block w-64 flex-shrink-0">
-            <div className="space-y-6">
-              <div className="text-center">
-                <div className="border border-gray-300 bg-gray-100 p-2 flex items-center justify-center h-64">
-                  <Calendar className="w-16 h-16 text-gray-400" />
-                </div>
-                <p className="mt-2 text-sm font-medium">No E-Paper</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Main Content Area */}
-          <div className="flex-1">
-            {/* Flash India News Header */}
-            <div className="bg-gray-800 text-white p-2 md:p-4 mb-4 md:mb-6">
-              <h1 className="text-lg md:text-2xl font-bold text-center">Flash India News</h1>
-            </div>
-
-            {/* Main Content */}
-            <div className="bg-white border border-gray-300 p-2 md:p-6">
-              {/* Newspaper Masthead */}
-              <div className="border-b-2 border-gray-800 pb-2 md:pb-4 mb-4 md:mb-6">
-                <div className="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
-                  <div className="flex items-center">
-                    <div className="bg-red-600 text-white px-2 md:px-3 py-1 mr-2 md:mr-4">
-                      <span className="font-bold text-xs md:text-sm">FLASH INDIA</span>
-                      <div className="bg-yellow-400 text-black px-1 md:px-2 py-1 mt-1">
-                        <span className="text-xs font-bold">NEWS</span>
-                      </div>
-                    </div>
-                    <div className="text-blue-600">
-                      <h2 className="text-2xl md:text-4xl font-bold telugu-text">
-                        ఫ్లాష్ ఇండియా
-                      </h2>
-                      <p className="text-xs md:text-sm">www.flashindianews.com</p>
-                      <p className="text-xs">FLASH INDIA TELUGU DAILY</p>
-                    </div>
-                  </div>
-                  <div className="text-center md:text-right">
-                    <div className="bg-blue-600 text-white px-2 md:px-3 py-1 mb-2">
-                      <span className="font-bold text-xs md:text-sm">TELANGANA RISING 2047</span>
-                    </div>
-                    <p className="text-xs">RNI NO. APTEL/2010/33229</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Date and Issue Info */}
-              <div className="bg-red-600 text-white p-1 md:p-2 mb-4 md:mb-6 text-center">
-                <div className="flex flex-wrap justify-center items-center text-xs md:text-sm telugu-text">
-                  <span className="mx-2">Today's E-Paper ({date}) is not available yet</span>
-                </div>
-              </div>
-
-              {/* No E-Paper Message */}
-              <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
-                <Calendar className="w-24 h-24 text-gray-400 mb-4" />
-                <h3 className="text-xl md:text-2xl font-semibold text-gray-600 mb-2 telugu-text">
-                  ఈరోజు ఈ-పేపర్ అందుబాటులో లేదు
-                </h3>
-                <h3 className="text-xl font-semibold text-gray-600 mb-4">No E-Paper Available</h3>
-                <p className="text-gray-500 text-center max-w-md">
-                  Today's e-paper ({date}) is not available yet.<br />
-                  Please check back later or contact the administrator.
-                </p>
-              </div>
-            </div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-800 mb-8">Today's News</h1>
+          <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg shadow-md p-8">
+            <Calendar className="w-24 h-24 text-gray-400 mb-4" />
+            <h3 className="text-xl font-semibold text-gray-600 mb-4">No E-Paper Available</h3>
+            <p className="text-gray-500 text-center max-w-md">
+              Today's e-paper ({date}) is not available yet.<br />
+              Please check back later.
+            </p>
           </div>
         </div>
       </div>
@@ -182,24 +122,39 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
   }
 
   return (
-    <div className="container mx-auto px-2 md:px-4 py-4 md:py-8 pb-20 md:pb-8">
-      <div className="flex flex-col md:flex-row gap-4 md:gap-8">
-        {/* Left Sidebar - Page Thumbnails - Hidden on mobile */}
-        <div className="hidden md:block w-64 flex-shrink-0">
-          <div className="space-y-6">
+    <div className="container mx-auto px-4 py-8">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">Today's News</h1>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+          <span className="text-gray-600">{date}</span>
+          {numPages > 0 && (
+            <>
+              <span className="text-gray-400">•</span>
+              <span className="text-gray-600">Page {currentPage} of {numPages}</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Left Sidebar - Page Thumbnails - Hidden on mobile/tablet */}
+        <div className="hidden lg:block w-48 flex-shrink-0">
+          <h3 className="text-lg font-semibold mb-4">Pages</h3>
+          <div className="space-y-4">
             {numPages > 0 && Array.from({ length: numPages }, (_, i) => (
               <div key={i + 1} className="text-center">
                 <div 
-                  className={`border border-gray-300 bg-white p-2 hover:shadow-md transition-shadow cursor-pointer ${
-                    currentPage === i + 1 ? 'ring-2 ring-blue-500' : ''
+                  className={`border-2 bg-white p-1 hover:shadow-md transition-all cursor-pointer rounded ${
+                    currentPage === i + 1 ? 'border-blue-500 shadow-md' : 'border-gray-200'
                   }`}
                   onClick={() => setCurrentPage(i + 1)}
                 >
-                  <div className="w-full h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
+                  <div className="w-full h-32 bg-gray-50 flex items-center justify-center overflow-hidden rounded">
                     <Document file={pdfUrl} loading={null}>
                       <Page
                         pageNumber={i + 1}
-                        width={180}
+                        width={120}
                         loading={null}
                         renderTextLayer={false}
                         renderAnnotationLayer={false}
@@ -208,7 +163,7 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
                     </Document>
                   </div>
                 </div>
-                <p className="mt-2 text-sm font-medium">Page {i + 1}</p>
+                <p className="mt-1 text-xs text-gray-600">{i + 1}</p>
               </div>
             ))}
           </div>
@@ -216,102 +171,24 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
 
         {/* Main Content Area */}
         <div className="flex-1">
-          {/* Flash India News Header */}
-          <div className="bg-gray-800 text-white p-2 md:p-4 mb-4 md:mb-6">
-            <div className="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
-              <h1 className="text-lg md:text-2xl font-bold text-center">Flash India News - E-Paper</h1>
+          {/* Controls */}
+          <div className="bg-white rounded-lg shadow-sm border p-4 mb-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              {/* Navigation */}
               <div className="flex items-center space-x-2">
-                {/* Page Info */}
-                {numPages > 0 && (
-                  <span className="text-sm bg-gray-700 px-2 py-1 rounded">
-                    Page {currentPage} of {numPages}
-                  </span>
-                )}
-                
-                {/* Controls */}
                 <button
-                  onClick={zoomOut}
-                  className="p-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors"
-                  title="Zoom Out"
+                  onClick={goToPrevPage}
+                  disabled={currentPage <= 1}
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 transition-colors"
                 >
-                  <ZoomOut className="w-4 h-4" />
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Previous</span>
                 </button>
-                <span className="text-sm px-2">{Math.round(scale * 100)}%</span>
-                <button
-                  onClick={zoomIn}
-                  className="p-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors"
-                  title="Zoom In"
-                >
-                  <ZoomIn className="w-4 h-4" />
-                </button>
-                
-                <button
-                  onClick={handleDownload}
-                  className="p-2 bg-yellow-600 rounded hover:bg-yellow-500 transition-colors"
-                  title="Download PDF"
-                >
-                  <Download className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
 
-          {/* Main E-Paper Content */}
-          <div className="bg-white border border-gray-300 p-2 md:p-6">
-            {/* Newspaper Masthead */}
-            <div className="border-b-2 border-gray-800 pb-2 md:pb-4 mb-4 md:mb-6">
-              <div className="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
-                <div className="flex items-center">
-                  <div className="bg-red-600 text-white px-2 md:px-3 py-1 mr-2 md:mr-4">
-                    <span className="font-bold text-xs md:text-sm">FLASH INDIA</span>
-                    <div className="bg-yellow-400 text-black px-1 md:px-2 py-1 mt-1">
-                      <span className="text-xs font-bold">NEWS</span>
-                    </div>
-                  </div>
-                  <div className="text-blue-600">
-                    <h2 className="text-2xl md:text-4xl font-bold telugu-text">
-                      ఫ్లాష్ ఇండియా
-                    </h2>
-                    <p className="text-xs md:text-sm">www.flashindianews.com</p>
-                    <p className="text-xs">FLASH INDIA TELUGU DAILY</p>
-                  </div>
-                </div>
-                <div className="text-center md:text-right">
-                  <div className="bg-blue-600 text-white px-2 md:px-3 py-1 mb-2">
-                    <span className="font-bold text-xs md:text-sm">TELANGANA RISING 2047</span>
-                  </div>
-                  <p className="text-xs">RNI NO. APTEL/2010/33229</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Date and Issue Info */}
-            <div className="bg-red-600 text-white p-1 md:p-2 mb-4 md:mb-6 text-center">
-              <div className="flex flex-wrap justify-between items-center text-xs md:text-sm telugu-text">
-                <span>E-Paper</span>
-                <span>{date}</span>
-                <span>Page: {currentPage}</span>
-                <span>Total: {numPages} pages</span>
-              </div>
-            </div>
-
-            {/* Navigation Controls */}
-            <div className="bg-gray-50 p-2 mb-4 flex items-center justify-between rounded">
-              <button
-                onClick={goToPrevPage}
-                disabled={currentPage <= 1}
-                className="flex items-center space-x-2 px-3 py-2 bg-white border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span className="hidden md:inline">Previous</span>
-              </button>
-
-              {/* Mobile page selector */}
-              <div className="flex items-center space-x-2">
                 <select
                   value={currentPage}
                   onChange={(e) => setCurrentPage(Number(e.target.value))}
-                  className="border rounded px-2 py-1 bg-white text-sm"
+                  className="border rounded px-3 py-2 bg-white"
                 >
                   {Array.from({ length: numPages }, (_, i) => (
                     <option key={i + 1} value={i + 1}>
@@ -319,26 +196,57 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
                     </option>
                   ))}
                 </select>
+
+                <button
+                  onClick={goToNextPage}
+                  disabled={currentPage >= numPages}
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 transition-colors"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
-
-              <button
-                onClick={goToNextPage}
-                disabled={currentPage >= numPages}
-                className="flex items-center space-x-2 px-3 py-2 bg-white border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-              >
-                <span className="hidden md:inline">Next</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
+              
+              {/* Zoom and Download */}
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={zoomOut}
+                  className="p-2 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
+                  title="Zoom Out"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <span className="text-sm px-2 min-w-[60px] text-center">{Math.round(scale * 100)}%</span>
+                <button
+                  onClick={zoomIn}
+                  className="p-2 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
+                  title="Zoom In"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
+                
+                <div className="w-px h-6 bg-gray-300 mx-2"></div>
+                
+                <button
+                  onClick={handleDownload}
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                  title="Download PDF"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download</span>
+                </button>
+              </div>
             </div>
+          </div>
 
-            {/* PDF Viewer */}
-            <div className="flex justify-center overflow-auto">
+          {/* PDF Viewer */}
+          <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+            <div className="flex justify-center bg-gray-50 p-4">
               {isLoading && (
                 <div className="flex items-center justify-center min-h-[600px]">
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800 mx-auto mb-4"></div>
-                    <p className="text-gray-600 telugu-text">ఈ-పేపర్ లోడ్ అవుతోంది...</p>
-                    <p className="text-gray-600">Loading today's e-paper...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading today's news...</p>
                   </div>
                 </div>
               )}
@@ -347,7 +255,6 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
                 <div className="flex items-center justify-center min-h-[600px]">
                   <div className="text-center text-red-600">
                     <Calendar className="w-16 h-16 text-red-400 mx-auto mb-4" />
-                    <p className="text-lg font-semibold mb-2 telugu-text">ఈ-పేపర్ లోడ్ చేయడంలో లోపం</p>
                     <p className="text-lg font-semibold mb-2">Error Loading E-Paper</p>
                     <p className="text-sm">{error}</p>
                   </div>
@@ -370,7 +277,7 @@ const EPaperViewer: React.FC<EPaperViewerProps> = ({ pdfUrl, date }) => {
                         loading={null}
                         renderTextLayer={false}
                         renderAnnotationLayer={false}
-                        className="shadow-lg border border-gray-300 max-w-full"
+                        className="shadow-lg max-w-full"
                       />
                     </div>
                   </Document>

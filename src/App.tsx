@@ -3,11 +3,12 @@ import Header from './components/Header';
 import PageNavigation from './components/PageNavigation';
 import NewspaperLayout from './components/NewspaperLayout';
 import EPaperViewer from './components/EPaperViewer';
+import Archive from './components/Archive';
 import Footer from './components/Footer';
 import { useEPaper } from './hooks/useEPaper';
 
 function App() {
-  const [viewMode, setViewMode] = useState<'epaper' | 'design'>('epaper');
+  const [viewMode, setViewMode] = useState<'today' | 'archive' | 'design'>('today');
   const { ePaperInfo, isLoading, refreshEPaper } = useEPaper();
 
   return (
@@ -20,14 +21,24 @@ function App() {
           <div className="flex items-center justify-between py-2">
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => setViewMode('epaper')}
+                onClick={() => setViewMode('today')}
                 className={`px-4 py-2 rounded font-medium transition-colors ${
-                  viewMode === 'epaper'
+                  viewMode === 'today'
                     ? 'bg-blue-600 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                Today's E-Paper
+                Today's News
+              </button>
+              <button
+                onClick={() => setViewMode('archive')}
+                className={`px-4 py-2 rounded font-medium transition-colors ${
+                  viewMode === 'archive'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Archive
               </button>
               <button
                 onClick={() => setViewMode('design')}
@@ -41,7 +52,7 @@ function App() {
               </button>
             </div>
             
-            {viewMode === 'epaper' && (
+            {viewMode === 'today' && (
               <button
                 onClick={refreshEPaper}
                 disabled={isLoading}
@@ -54,7 +65,7 @@ function App() {
         </div>
       </div>
 
-      {viewMode === 'epaper' ? (
+      {viewMode === 'today' ? (
         <>
           <EPaperViewer
             pdfUrl={ePaperInfo?.exists ? ePaperInfo.url : null}
@@ -101,6 +112,8 @@ function App() {
             </div>
           )}
         </>
+      ) : viewMode === 'archive' ? (
+        <Archive />
       ) : (
         <>
           <PageNavigation />
